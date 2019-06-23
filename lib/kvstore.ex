@@ -8,7 +8,8 @@ defmodule Kvstore.Application do
   def start(_type, _args) do
     # List all child processes to be supervised
     children = [
-      {Kvstore.Storage, name: Kvstore.Storage}
+      {Kvstore.Storage, name: Kvstore.Storage},
+      {Plug.Cowboy, scheme: :http, plug: Kvstore.Router, options: [port: 8080]},
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
