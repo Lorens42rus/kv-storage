@@ -1,4 +1,4 @@
-# JsonWebServer
+# KVStore
 
 Предоставляет api для хранение JSON данных
 
