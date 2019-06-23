@@ -30,5 +30,6 @@ use Mix.Config
 #     import_config "#{Mix.env()}.exs"
 
 config :kvstore, storage_table_name: 'storage'
+config :kvstore, project_port: 8000
 
 import_config "#{Mix.env()}.exs"
