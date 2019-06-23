@@ -1,4 +1,8 @@
 defmodule Kvstore.Router do
+  @moduledoc """
+  Роутер, предоставляющий WEB API для работы с модулем Storage
+  """
+
   use Plug.Router
   use Plug.ErrorHandler
   require Logger
