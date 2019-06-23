@@ -1,4 +1,8 @@
 defmodule Kvstore.Storage do
+  @moduledoc """
+    Модуль, предоставляющий возможность хранения JSON данных
+  """
+
   use GenServer
 
   @storage_name Application.get_env(:kvstore, :storage_table_name)
@@ -19,26 +23,71 @@ defmodule Kvstore.Storage do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
+  @doc """
+  Позволяет положить в хранилище значение `val` по ключу `key`
+  При указании параметра `ttl` можно задать время, через которое
+  данные будут удалены из хранилища по указанному ключу
+
+  ## Параметры
+
+    - key: Ключ, по которому будет лежать значение
+    - val: Значение для сохранения
+    - ttl: Offset в секундах, сколько будет храниться указанное значение
+
+  """
   @spec create(String.t(), map | list, non_neg_integer) :: {:ok, nil} | {:error, String.t()}
   def create(key, val, ttl \\ 0) do
     GenServer.call(__MODULE__, {:create, key, val, ttl})
   end
 
+  @doc """
+  Возвращает значение, хранящееся по ключу key
+
+  ## Параметры
+
+    - key: Ключ, по-которому будет производиться поиск значения
+
+  """
   @spec read(String.t()) :: {:ok, map | list} | {:error, String.t()}
   def read(key) do
     GenServer.call(__MODULE__, {:read, key})
   end
 
+  @doc """
+  Заменяет значение по указанному ключу
+
+  ## Параметры
+
+    - key: Ключ, по которому заменено значение
+    - val: Значение для сохранения
+    - ttl: Offset в секундах, сколько будет храниться указанное значение
+
+  """
   @spec update(String.t(), map | list, non_neg_integer) :: :ok
   def update(key, val, ttl \\ 0) do
     GenServer.call(__MODULE__, {:update, key, val, ttl})
   end
 
+  @doc """
+  Удаляет значение по указанному ключу
+
+  ## Параметры
+
+    - key: Ключ, по которому будет удалено значение
+
+  """
   @spec delete(String.t()) :: :ok
   def delete(key) do
     GenServer.cast(__MODULE__, {:delete, key})
   end
 
+  @doc """
+  Метод, удаляющий все значения из хранилища, для которых истек ttl
+
+  ## Параметры
+    - table: PID ETS таблицы
+
+  """
   @spec handle_ttl(any) :: no_return
   def handle_ttl(table) do
     now = DateTime.utc_now() |> DateTime.to_unix()
