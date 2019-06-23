@@ -1,18 +1,19 @@
-defmodule Kvstore do
-  @moduledoc """
-  Documentation for Kvstore.
-  """
+defmodule Kvstore.Application do
+  # See https://hexdocs.pm/elixir/Application.html
+  # for more information on OTP Applications
+  @moduledoc false
 
-  @doc """
-  Hello world.
+  use Application
 
-  ## Examples
+  def start(_type, _args) do
+    # List all child processes to be supervised
+    children = [
+      {Kvstore.Storage, name: Kvstore.Storage}
+    ]
 
-      iex> Kvstore.hello()
-      :world
-
-  """
-  def hello do
-    :world
+    # See https://hexdocs.pm/elixir/Supervisor.html
+    # for other strategies and supported options
+    opts = [strategy: :one_for_one, name: Kvstore.Supervisor]
+    Supervisor.start_link(children, opts)
   end
 end
